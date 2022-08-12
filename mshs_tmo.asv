@@ -1,0 +1,31 @@
+%% Fresh start
+clear all; close all; clc;
+
+%%
+hdr     = im2double(hdrread('Bottles_Small.hdr'));
+
+% creating luma
+hdr_y   = 0.299 * hdr(:, :, 1) + 0.587 * hdr(:, :, 2) + 0.114 * hdr(:, :, 3);
+L       = log10(hdr_y);
+[r,c]   = size(L);
+scale   = [1 2 4 8 16 32];
+
+for i = 1:r
+    for j = 1:c
+        for s = 1:length(scale)
+            dim = ceil(size(L)/scale(s));
+            w1  = dim(1);
+            w2  = dim(2);
+            iMin = max(i-w1,1);
+            iMax = min(i+w1,dim(1));
+            jMin = max(j-w2,1);
+            jMax = min(j+w2,dim(2));
+            I = L(iMin:iMax,jMin:jMax);
+            sig = var(I(:));
+
+        end
+    end
+end
+
+
+imgOut = ChangeLuminance(hdr, hdr_y, ldr);
