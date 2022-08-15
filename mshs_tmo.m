@@ -10,18 +10,18 @@ L       = log10(hdr_y);
 [r,c]   = size(L);
 scale   = [1 2 4 8];
 nbins   = 10;
-
+dim     = [200 200];
 for i = 1:r
     for j = 1:c
         pix = L(i,j);
         for s = 1:length(scale)
-            dim = ceil(size(L)/scale(s));
+            dim = ceil(dim/scale(s));
             w1  = dim(1);
             w2  = dim(2);
             iMin = max(i-w1,1);
-            iMax = min(i+w1,dim(1));
+            iMax = min(i+w1,r);
             jMin = max(j-w2,1);
-            jMax = min(j+w2,dim(2));
+            jMax = min(j+w2,c);
             I = L(iMin:iMax,jMin:jMax);
 
             sig = var(I(:));
@@ -61,6 +61,9 @@ for i = 1:r
     end
 end
 
-
+%%
 imgOut = ChangeLuminance(hdr, hdr_y, ldr);
-imshow(im2uint8(imgOut))
+imshow(uint8(imgOut))
+
+%% 
+imwrite(uint8(imgOut), 'Result.png')
